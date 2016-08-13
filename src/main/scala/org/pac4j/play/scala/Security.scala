@@ -46,7 +46,7 @@ trait Security[P<:CommonProfile] extends Controller {
    */
   protected def getOrCreateSessionId(request: RequestHeader): Session = {
     val webContext = new PlayWebContext(request, playSessionStore)
-    webContext.getSessionStore.getOrCreateSessionId(webContext)
+    webContext.getSessionStore.asInstanceOf[PlaySessionStore].getOrCreateSessionId(webContext)
     val map = JavaConverters.mapAsScalaMapConverter(webContext.getJavaSession).asScala.toMap
     new Session(map)
   }

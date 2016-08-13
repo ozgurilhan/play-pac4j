@@ -33,7 +33,7 @@ public class PlayWebContext implements WebContext {
 
     protected final Session session;
 
-    protected final SessionStore<PlayWebContext> sessionStore;
+    protected SessionStore<PlayWebContext> sessionStore;
 
     protected String responseContent = "";
 
@@ -42,12 +42,22 @@ public class PlayWebContext implements WebContext {
         this.request = context.request();
         this.response = context.response();
         this.session = context.session();
-        assertNotNull("sessionStore", sessionStore);
-        this.sessionStore = sessionStore;
+        setSessionStore(sessionStore);
     }
 
     public PlayWebContext(final RequestHeader requestHeader, final SessionStore<PlayWebContext> sessionStore) {
         this(JavaHelpers$.MODULE$.createJavaContext(requestHeader), sessionStore);
+    }
+
+    @Override
+    public SessionStore getSessionStore() {
+        return this.sessionStore;
+    }
+
+    @Override
+    public void setSessionStore(SessionStore sessionStore) {
+        assertNotNull("sessionStore", sessionStore);
+        this.sessionStore = sessionStore;
     }
 
     /**
@@ -67,13 +77,6 @@ public class PlayWebContext implements WebContext {
     public Context getJavaContext() {
         return this.context;
     }
-
-    /**
-     * Return the session store.
-     *
-     * @return the session store
-     */
-    public SessionStore<PlayWebContext> getSessionStore() { return this.sessionStore; }
 
     @Override
     public void setResponseStatus(final int code) {}
@@ -132,21 +135,6 @@ public class PlayWebContext implements WebContext {
             parameters.putAll(urlParameters);
         }
         return parameters;
-    }
-
-    @Override
-    public Object getSessionIdentifier() {
-        return sessionStore.getOrCreateSessionId(this);
-    }
-
-    @Override
-    public Object getSessionAttribute(final String key) {
-        return sessionStore.get(this, key);
-    }
-
-    @Override
-    public void setSessionAttribute(final String key, final Object value) {
-        sessionStore.set(this, key, value);
     }
 
     @Override
