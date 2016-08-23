@@ -2,7 +2,7 @@ package org.pac4j.play;
 
 import org.pac4j.core.config.Config;
 import org.pac4j.core.engine.ApplicationLogoutLogic;
-import org.pac4j.play.engine.PlayApplicationLogoutLogic;
+import org.pac4j.core.engine.DefaultApplicationLogoutLogic;
 import org.pac4j.play.store.PlaySessionStore;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -25,7 +25,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  */
 public class ApplicationLogoutController extends Controller {
 
-    private ApplicationLogoutLogic<Result, PlayWebContext> applicationLogoutLogic = new PlayApplicationLogoutLogic();
+    private ApplicationLogoutLogic<Result, PlayWebContext> applicationLogoutLogic = new DefaultApplicationLogoutLogic<>();
 
     private String defaultUrl;
 

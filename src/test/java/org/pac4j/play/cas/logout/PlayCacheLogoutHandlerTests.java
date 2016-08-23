@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.play.PlayWebContext;
-import org.pac4j.play.store.PlayCacheStore;
+import org.pac4j.play.store.PlayCacheSessionStore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import play.cache.CacheApi;
@@ -44,7 +44,7 @@ public final class PlayCacheLogoutHandlerTests implements TestsConstants {
     @PrepareForTest(CacheApi.class)
     public void testRecord() {
         mockStatic(CacheApi.class);
-        when(context.getSessionStore()).thenReturn(new PlayCacheStore(cacheApiMock));
+        when(context.getSessionStore()).thenReturn(new PlayCacheSessionStore(cacheApiMock));
         final Http.Session session = mock(Http.Session.class);
         when(context.getJavaSession()).thenReturn(session);
         handler.recordSession(context, KEY);

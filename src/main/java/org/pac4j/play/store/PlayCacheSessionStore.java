@@ -2,6 +2,8 @@ package org.pac4j.play.store;
 
 import com.google.inject.Inject;
 import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.play.PlayWebContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +16,9 @@ import play.mvc.Http;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class PlayCacheStore implements PlaySessionStore {
+public class PlayCacheSessionStore implements PlaySessionStore {
 
-    private static final Logger logger = LoggerFactory.getLogger(PlayCacheStore.class);
+    private static final Logger logger = LoggerFactory.getLogger(PlayCacheSessionStore.class);
 
     private final static String SEPARATOR = "$";
 
@@ -29,7 +31,7 @@ public class PlayCacheStore implements PlaySessionStore {
     private final CacheApi cache;
 
     @Inject
-    public PlayCacheStore(final CacheApi cache) {
+    public PlayCacheSessionStore(final CacheApi cache) {
         this.cache = cache;
     }
 
@@ -66,11 +68,33 @@ public class PlayCacheStore implements PlaySessionStore {
         cache.set(getKey(sessionId, key), value, timeout);
     }
 
+    @Override
+    public boolean invalidateSession(final PlayWebContext context) {
+        final Http.Session session = context.getJavaSession();
+        final String sessionId = session.get(Pac4jConstants.SESSION_ID);
+        if (sessionId != null) {
+            session.remove(Pac4jConstants.SESSION_ID);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Object getTrackableSession(final PlayWebContext context) {
+        return context.getJavaSession().get(Pac4jConstants.SESSION_ID);
+    }
+
+    @Override
+    public SessionStore<PlayWebContext> buildFromTrackableSession(final PlayWebContext context, final Object trackableSession) {
+        context.getJavaSession().put(Pac4jConstants.SESSION_ID, (String) trackableSession);
+        return this;
+    }
+
     public String getPrefix() {
         return prefix;
     }
 
-    public void setPrefix(String prefix) {
+    public void setPrefix(final String prefix) {
         this.prefix = prefix;
     }
 
@@ -78,7 +102,12 @@ public class PlayCacheStore implements PlaySessionStore {
         return timeout;
     }
 
-    public void setTimeout(int timeout) {
+    public void setTimeout(final int timeout) {
         this.timeout = timeout;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "cache", cache, "prefix", prefix, "timeout", timeout);
     }
 }

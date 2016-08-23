@@ -7,7 +7,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.play.PlayWebContext;
-import org.pac4j.play.store.PlayCacheStore;
+import org.pac4j.play.store.PlayCacheSessionStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.cache.CacheApi;
@@ -58,7 +58,7 @@ public class PlayCacheLogoutHandler extends NoLogoutHandler {
     public void recordSession(WebContext context, String ticket) {
         logger.debug("ticket: {}", ticket);
         final PlayWebContext webContext = (PlayWebContext) context;
-        final PlayCacheStore playCacheStore = (PlayCacheStore) webContext.getSessionStore();
+        final PlayCacheSessionStore playCacheStore = (PlayCacheSessionStore) webContext.getSessionStore();
         final String sessionId = playCacheStore.getOrCreateSessionId(webContext);
         logger.debug("save sessionId: {}", sessionId);
         getCache().set(ticket, sessionId, playCacheStore.getTimeout());

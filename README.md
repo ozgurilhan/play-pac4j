@@ -431,7 +431,7 @@ bind(classOf[ApplicationLogoutController]).toInstance(logoutController)
 
 ### 2.4.0 (Play 2.5) -> 2.5.0 (Play 2.5)
 
-The `SecurityModule` class needs to bind the `PlaySessionStore` to the `PlayCacheStore`.
+The `SecurityModule` class needs to bind the `PlaySessionStore` to the `PlayCacheSessionStore`.
 
 The `PlayWebContext` needs a `PlaySessionStore`, see examples at heading 5 (Get the user profile (`ProfileManager`)).
 
@@ -451,7 +451,7 @@ The `getUserProfile` method of the `Security` trait returns a `Option[CommonProf
 
 ### 2.0.0 -> 2.0.1
 
-The `DataStore` concept is replaced by the pac4j `SessionStore` concept. The `PlayCacheStore` does no longer need to be bound in the security module. A new session store could be defined using the `config.setSessionStore` method.
+The `DataStore` concept is replaced by the pac4j `SessionStore` concept. The `PlayCacheSessionStore` does no longer need to be bound in the security module. A new session store could be defined using the `config.setSessionStore` method.
 
 The `DefaultHttpActionAdapter` does not need to be bound in the security module, but must to be set using the `config.setHttpActionAdapter` method.
 
